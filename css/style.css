@@ -223,12 +223,28 @@ body {
 
 /* Open */
 
-.toolbar .tool.open {
+.toolbar .tool.open,
+.toolbar .tool.open-external {
 	float: right;
 }
 
 .toolbar .tool.open .title {
-	background: #1a9439;
+	background: #4ab02f;
+}
+
+.toolbar .tool.open-external {
+	-webkit-transform: translateY(-100%);
+	-webkit-transform-origin: center center;
+	opacity: 0;
+}
+
+.toolbar .tool.open-external.visible {
+	-webkit-transform: translateY(0%);
+	opacity: 1;
+}
+
+.toolbar .tool.open-external .title {
+	background: #4ab02f;
 }
 
 /* Open
