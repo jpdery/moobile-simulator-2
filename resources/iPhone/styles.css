@@ -24,6 +24,9 @@
 }
 
 .simulator .simulator-display-glare {
+	-webkit-backface-visibility: hidden;
+	   -moz-backface-visibility: hidden;
+	        backface-visibility: hidden;
 	background: url(iphone-glare.png)  no-repeat; /* Must be here, FF11 */
 	-webkit-background-size: 360px 726px;
 	   -moz-background-size: 360px 726px;

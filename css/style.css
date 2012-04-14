@@ -129,7 +129,6 @@ html {
 }
 
 body {
-	-webkit-animation-fill-mode
 	-webkit-font-smoothing: antialiased;
 	-webkit-box-orient: vertical;
 	background: rgb(229, 229, 229);
@@ -430,9 +429,6 @@ body.safari .open-dialog {
 -----------------------------------------------------------------------------*/
 
 .content .simulator {
-	-webkit-transition: all 350ms;
-	   -moz-transition: all 350ms;
-	        transition: all 350ms;
 	-webkit-transform-style: preserve-3d;
 	   -moz-transform-style: preserve-3d;
 	        transform-style: preserve-3d;
@@ -445,6 +441,12 @@ body.safari .open-dialog {
 	position: absolute;
 	right: 0px;
 	top: 0px;
+}
+
+.content .simulator.animated {
+	-webkit-transition: all 350ms;
+	   -moz-transition: all 350ms;
+	        transition: all 350ms;
 }
 
 .content .simulator.portrait.flipped {

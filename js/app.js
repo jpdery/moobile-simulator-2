@@ -3,7 +3,9 @@
 
 Moobile.Simulator.setResourcePath('resources')
 
+// -----------------------------------------------------------------------------
 // Toolbar
+// -----------------------------------------------------------------------------
 
 new Unit({
 
@@ -70,7 +72,9 @@ new Unit({
 
 });
 
+// -----------------------------------------------------------------------------
 // Open Dialog
+// -----------------------------------------------------------------------------
 
 new Unit({
 
@@ -91,7 +95,10 @@ new Unit({
 	},
 
 	toggle: function() {
-		document.getElements('.open-dialog, .simulator').toggleClass('flipped');
+		var togglable = document.getElements('.open-dialog, .simulator');
+		togglable.addClass('animated');
+		togglable.addEvent('transitionend', function() { togglable.removeClass('animated'); });
+		togglable.toggleClass('flipped');
 	},
 
 	onRequestOpen: function() {
@@ -109,7 +116,9 @@ new Unit({
 
 });
 
+// -----------------------------------------------------------------------------
 // Simulator
+// -----------------------------------------------------------------------------
 
 new Unit({
 
