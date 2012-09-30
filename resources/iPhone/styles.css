@@ -170,6 +170,25 @@ body.chrome .simulator .simulator-display {
 	text-align: center;
 }
 
+/* Safari Bar
+-----------------------------------------------------------------------------*/
+
+.simulator.portrait .simulator-safari-bar {
+	display: none;
+	height: 460px;
+	width: 320px;
+}
+
+.simulator.landscape .simulator-safari-bar {
+	display: none;
+	height: 300px;
+	width: 480px;
+}
+
+.simualtor.with-safari-bar .simulator-safari-bar {
+	display: block;
+}
+
 /* Button Bar
 -----------------------------------------------------------------------------*/
 

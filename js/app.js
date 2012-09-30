@@ -1,180 +1,377 @@
+(function() {
 
-// The default resource path
+var createItem = function(id, label, active) {
+	return new Element('div.item').set('data-value', id).set('html', label).toggleClass('active', active);
+};
 
-Moobile.Simulator.setResourcePath('resources')
+/**
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.2
+ */
+var Settings = {
 
-// -----------------------------------------------------------------------------
-// Toolbar
-// -----------------------------------------------------------------------------
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	setApplication: function(application) {
+		LocalStorage.set('application', application);
+		return this;
+	},
 
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	getApplication: function() {
+		return LocalStorage.get('application');
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	setDevice: function(device) {
+		LocalStorage.set('device', device);
+		return this;
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	getDevice: function() {
+		return LocalStorage.get('device') || 'iPhone';
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	setDeviceOption: function(device, option, value) {
+
+		var deviceOptions = LocalStorage.get('device-options') || {};
+		if (deviceOptions[device] == undefined) {
+			deviceOptions[device] = {};
+		}
+
+		deviceOptions[device][option] = value;
+
+		LocalStorage.set('device-options', deviceOptions);
+
+		return this;
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	getDeviceOption: function(device, option) {
+
+		var deviceOptions = LocalStorage.get('device-options') || {};
+		if (deviceOptions[device]) {
+			return deviceOptions[device][option] || null;
+		}
+
+		return null;
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	setDeviceOptions: function(device, options) {
+
+		var deviceOptions = LocalStorage.get('device-options') || {};
+		if (deviceOptions[device] == undefined) {
+			deviceOptions[device] = {};
+		}
+
+		deviceOptions[device] = options;
+
+		LocalStorage.set('device-options', deviceOptions);
+
+		return this;
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	getDeviceOptions: function(device) {
+
+		var deviceOptions = LocalStorage.get('device-options') || {};
+		if (deviceOptions[device]) {
+			return deviceOptions[device];
+		}
+
+		return null;
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	setDeviceOrientation: function(device, orientation) {
+		var deviceOrientations = LocalStorage.get('device-orientations') || {};
+		deviceOrientations[device] = orientation;
+		LocalStorage.set('device-orientations', deviceOrientations);
+		return this;
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	getDeviceOrientation:function(device) {
+		var deviceOrientations = LocalStorage.get('device-orientations') || {};
+		return deviceOrientations[device] || 'portrait';
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	setDeviceScale: function(device, scale) {
+		var deviceScales = LocalStorage.get('device-scales') || {};
+		deviceScales[device] = scale;
+		LocalStorage.set('device-scales', deviceScales);
+		return this;
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	getDeviceScale:function(device) {
+		var deviceScales = LocalStorage.get('device-scales') || {};
+		return deviceScales[device] || 100;
+	}
+};
+
+/**
+ * Toolbar Unit
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @edited 0.2
+ * @since  0.1
+ */
 new Unit({
 
 	Prefix: 'toolbar',
 
-	openButton: null,
-
-	openExternalButton: null,
-
-	deviceButtons: null,
-
-	orientationButtons: null,
-
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @edited 0.2
+	 * @since  0.1
+	 */
 	readySetup: function() {
 
-		this.openButton = document.getElement('.toolbar .tool.open');
-		this.openExternalButton = document.getElement('.toolbar .tool.open-external');
-		this.deviceButtons = document.getElements('.toolbar .tool.device .option');
-		this.orientationButtons = document.getElements('.toolbar .tool.orientation .option');
+		var device = Settings.getDevice();
 
-		this.openButton.addEvent('click', this.onOpen.bind(this));
-		this.openExternalButton.addEvent('click', this.onOpenExternal.bind(this));
-		this.deviceButtons.addEvent('click', this.onDeviceSelect.bind(this));
-		this.orientationButtons.addEvent('click', this.onOrientationSelect.bind(this));
+		var content = document.getElement('.content');
+		var toolbar = document.getElement('.toolbar');
 
-		this.subscribe('open.file', this.onFileOpen.bind(this));
+		this.openToolbarItem = toolbar.getElement('.toolbar-item-open');
+		this.deviceToolbarItem = toolbar.getElement('.toolbar-item-device');
+		this.optionToolbarItem = toolbar.getElement('.toolbar-item-option');
+		this.detachToolbarItem = toolbar.getElement('.toolbar-item-detach');
+		this.orientationToolbarItem = toolbar.getElement('.toolbar-item-orientation');
 
-		var file = LocalStorage.get('file');
-		if (file) {
-			this.openExternalButton.addClass('visible');
+		this.openToolbarItem.addEvent('click:relay(.item)', this.onSelectOpen.bind(this));
+		this.deviceToolbarItem.addEvent('click:relay(.item)', this.onSelectDevice.bind(this));
+		this.optionToolbarItem.addEvent('click:relay(.item)', this.onSelectOption.bind(this));
+		this.detachToolbarItem.addEvent('click:relay(.item)', this.onSelectDetach.bind(this));
+		this.orientationToolbarItem.addEvent('click:relay(.item)', this.onSelectOrientation.bind(this));
+
+		this.detachToolbarItem.toggleClass('disabled', !Settings.getApplication());
+
+		var scale = Settings.getDeviceScale(device);
+		var track = document.getElement('.track');
+		var thumb = document.getElement('.thumb');
+
+		var options = {
+			mode: 'vertical',
+			range: [100, 15],
+		};
+
+		this.scale = new Slider(track, thumb, options);
+		this.scale.addEvent('change', this.onScaleChange.bind(this));
+		this.scale.set(scale);
+
+		this.subscribe('simulator.device change', this.onSimulatorDeviceChange.bind(this));
+		this.subscribe('simulator.device option change', this.onSimulatorDeviceOptionChange.bind(this));
+		this.subscribe('simulator.device orientation change', this.onSimulatorDeviceOrientationChange.bind(this));
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
+	onSelectOpen: function(e) {
+		this.publish('select open');
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @edited 0.2
+	 * @since  0.1
+	 */
+	onSelectDevice: function(e, element) {
+		this.publish('select device', element.get('data-value'));
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @edited 0.2
+	 * @since  0.1
+	 */
+	onSelectOption: function(e, element) {
+		this.publish('select option', element.get('data-value'));
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @edited 0.2
+	 * @since  0.1
+	 */
+	onSelectOrientation: function(e, element) {
+		this.publish('select orientation', element.get('data-value'));
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	onSelectDetach: function(e, element) {
+		this.publish('select detach');
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	onScaleChange: function(value) {
+
+		Settings.setDeviceScale(Settings.getDevice(), value);
+
+		var content = document.getElement('.content');
+		if (content) {
+			content.setStyle('transform', 'scale(' + (value / 100) + ')');
 		}
 	},
 
-	onOpen: function(e) {
-		this.publish('open');
-	},
+	// -------------------------------------------------------------------------
+	// Simulator Events
+	// -------------------------------------------------------------------------
 
-	onOpenExternal: function(e) {
-		var iframe = document.getElement('iframe');
-		if (iframe) {
-			var source = iframe.get('src');
-			if (source) {
-				var size = iframe.getSize();
-				var external = window.open(source, '_blank', 'height=' + size.y + ',width=' + size.x + ',location=no,menubar=no,scrollbars=no,status=no,titlebar=no,toolbar=no');
-				if (Browser.Platform.mac) {
-					(function() {
-						if (Browser.safari) external.resizeTo(size.x, size.y + 24);
-						if (Browser.chrome) external.resizeTo(size.x, size.y + 50);
-					}).delay(5);
-				}
-			}
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	onSimulatorDeviceChange: function(simulator, device) {
+
+		var items = this.optionToolbarItem.getElement('.items').empty();
+		if (items === null)
+			return;
+
+		items.empty();
+
+		var options = simulator.getDeviceOptions();
+		if (options) {
+			Object.each(options, function(option, id) {
+				createItem(id, option.title, option.active).inject(items);
+			});
+		}
+
+		var scale = Settings.getDeviceScale(device);
+		if (scale) {
+			this.scale.set(scale);
 		}
 	},
 
-	onDeviceSelect: function(e) {
-		this.publish('select device', e.target.get('data-value'));
-	},
-
-	onOrientationSelect: function(e) {
-		this.publish('select orientation', e.target.get('data-value'));
-	},
-
-	onFileOpen: function(file) {
-		if (file) {
-			this.openExternalButton.addClass('visible');
-		} else {
-			this.openExternalButton.removeClass('visible');
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	onSimulatorDeviceOptionChange: function(simulator, option, active) {
+		var item = this.optionToolbarItem.getElement('.items .item[data-value=' + option + ']');
+		if (item) {
+			item.toggleClass('active', active);
 		}
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	onSimulatorDeviceOrientationChange: function(simulator, orientation) {
+
+		var current = this.orientationToolbarItem.getElement('.items .item.active');
+		if (current) {
+			current.removeClass('active');
+		}
+
+		var item = this.orientationToolbarItem.getElement('.item[data-value=' + orientation + ']');
+		if (item) {
+			item.addClass('active');
+		}
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
+	onSimulatorOpenFile: function(file) {
+		this.detachToolbarItem.toggleClass('disabled', !file);
 	}
 
 });
 
-// -----------------------------------------------------------------------------
-// Open Dialog
-// -----------------------------------------------------------------------------
-
-new Unit({
-
-	Prefix: 'open',
-
-	input: null,
-
-	openButton: null,
-
-	closeButton: null,
-
-	readySetup: function() {
-		this.input = document.getElement('.open-dialog input');
-		this.input.set('value', LocalStorage.get('file'));
-		document.getElement('.open-dialog .button.open').addEvent('click', this.onOpenButtonClick.bind(this))
-		document.getElement('.open-dialog .button.close').addEvent('click', this.onCloseButtonClick.bind(this))
-		this.subscribe('toolbar.open', this.onRequestOpen.bind(this));
-	},
-
-	toggle: function() {
-		var togglable = document.getElements('.open-dialog, .simulator');
-		togglable.addClass('animated');
-		togglable.addEvent('transitionend', function() { togglable.removeClass('animated'); });
-		togglable.toggleClass('flipped');
-	},
-
-	onRequestOpen: function() {
-		this.toggle();
-	},
-
-	onOpenButtonClick: function() {
-		this.publish('file', this.input.get('value'));
-		this.toggle();
-	},
-
-	onCloseButtonClick: function() {
-		this.toggle();
-	}
-
-});
-
-// -----------------------------------------------------------------------------
-// Simulator
-// -----------------------------------------------------------------------------
-
+/**
+ * Simulator Unit
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @edited 0.2
+ * @since  0.1
+ */
 new Unit({
 
 	Prefix: 'simulator',
 
-	simulator: null,
-
-	reflection: null,
-
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
 	readySetup: function() {
 
-		if (Browser.safari)
-			document.body.addClass('safari');
-		if (Browser.chrome)
-			document.body.addClass('chrome');
+		document.body.addClass(Browser.name);
 
 		this.reflection = document.getElement('.content .reflection');
-		this.subscribe('toolbar.select device', this.onRequestDeviceChange.bind(this));
-		this.subscribe('toolbar.select orientation', this.onRequestOrientationChange.bind(this));
-		this.subscribe('open.file', this.onOpenFile.bind(this));
-		this.create();
-	},
-
-	create: function() {
-
-		var device = LocalStorage.get('device');
-		if (device === null) {
-			device = 'iPhone';
-		}
-
-		var orientation = LocalStorage.get('orientation')
-		if (orientation === null) {
-			orientation = 'portrait';
-		}
-
-		var file = LocalStorage.get('file');
+		this.subscribe('toolbar.select open', this.onToolbarSelectOpen.bind(this));
+		this.subscribe('toolbar.select device', this.onToolbarSelectDevice.bind(this));
+		this.subscribe('toolbar.select option', this.onToolbarSelectOption.bind(this));
+		this.subscribe('toolbar.select detach', this.onToolbarSelectDetach.bind(this));
+		this.subscribe('toolbar.select orientation', this.onToolbarSelectOrientation.bind(this));
 
 		var options = {
-			deviceOrientation: orientation,
-			devicePixelRatio: 1,
 			container: this.reflection
-		}
+		};
 
-		this.simulator = Moobile.Simulator.create(device, file, options);
+		this.simulator = new Moobile.Simulator(options);
 		this.simulator.addEvent('devicechange', this.onDeviceChange.bind(this));
+		this.simulator.addEvent('deviceoptionchange', this.onDeviceOptionChange.bind(this));
 		this.simulator.addEvent('deviceorientationchange', this.onDeviceOrientationChange.bind(this));
+		this.simulator.addEvent('deviceorientationanimationstart', this.onDeviceOrientationAnimationStart.bind(this));
+
+		this.simulator.setDevice(Settings.getDevice());
+		this.simulator.setApplication(Settings.getApplication());
 
 		this.reflect();
 	},
 
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
 	reflect: function() {
 
 		var s = this.simulator.getDeviceSize();
@@ -188,27 +385,157 @@ new Unit({
 		return this;
 	},
 
-	onOpenFile: function(file) {
-		LocalStorage.set('file', file);
-		this.simulator.setApplication(file);
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @edited 0.2
+	 * @since  0.1
+	 */
+	onDeviceChange: function(device) {
+		Settings.setDevice(device);
+		this.simulator.setDeviceOptions(Settings.getDeviceOptions(device));
+		this.simulator.setDeviceOrientation(Settings.getDeviceOrientation(device));
+		this.publish('device change', [this.simulator, device]);
+		this.reflect();
 	},
 
-	onRequestDeviceChange: function(device) {
-		LocalStorage.set('device', device);
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @edited 0.2
+	 * @since  0.1
+	 */
+	onDeviceOptionChange: function(option, value) {
+		Settings.setDeviceOption(Settings.getDevice(), option, value);
+		this.publish('device option change', [this.simulator, option, value]);
+		this.reflect();
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @edited 0.2
+	 * @since  0.1
+	 */
+	onDeviceOrientationChange: function(orientation) {
+		Settings.setDeviceOrientation(Settings.getDevice(), orientation);
+		this.publish('device orientation change', [this.simulator, orientation]);
+		this.reflect();
+	},
+
+	onDeviceOrientationAnimationStart: function() {
+		this.reflect();
+	},
+
+	// -------------------------------------------------------------------------
+	// Subscribed
+	// -------------------------------------------------------------------------
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
+	onToolbarSelectOpen: function(device) {
+
+		var element = document.getElement('.open');
+		var content = document.getElement('.content');
+
+		var form  = element.getElement('form');
+		var path  = element.getElement('form input[type=text]');
+		var close = element.getElement('.button-close');
+
+		var application = Settings.getApplication();
+		if (application) {
+			path.value = application;
+		}
+
+		path.focus();
+
+		element.toggleClass('visible');
+		content.toggleClass('minimize');
+
+		var onClose = function() {
+			element.toggleClass('visible');
+			content.toggleClass('minimize');
+		}.bind(this);
+
+		var onSubmit = function(e) {
+
+			e.stop();
+
+			var application = path.value;
+			if (application) {
+				Settings.setApplication(application);
+				this.simulator.setApplication(application);
+			}
+
+			element.toggleClass('visible');
+			content.toggleClass('minimize');
+
+		}.bind(this);
+
+		form.addEvent('submit:once', onSubmit);
+		close.addEvent('click:once', onClose);
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
+	onToolbarSelectDevice: function(device) {
 		this.simulator.setDeviceAnimated(device);
 	},
 
-	onRequestOrientationChange: function(orientation) {
-		LocalStorage.set('orientation', orientation);
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @edited 0.2
+	 * @since  0.1
+	 */
+	onToolbarSelectOption: function(id) {
+		var option = this.simulator.getDeviceOption(id);
+		if (option) {
+			this.simulator.setDeviceOption(id, !option.active);
+		}
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
+	onToolbarSelectOrientation: function(orientation) {
 		this.simulator.setDeviceOrientationAnimated(orientation);
 	},
 
-	onDeviceChange: function(name) {
-		this.reflect();
-	},
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	onToolbarSelectDetach: function() {
 
-	onDeviceOrientationChange: function(orientation) {
-		this.reflect();
+		var iframe = document.getElement('iframe');
+		var source = iframe.get('src');
+		if (source) {
+
+			var frame = iframe.getSize();
+			var popup = window.open(source, '_blank', 'height=' + frame.y + ',width=' + frame.x + ',location=no,menubar=no,scrollbars=no,status=no,titlebar=no,toolbar=no');
+			var resize = function() {
+
+				var sizeX = popup.document.body.clientWidth;
+				var sizeY = popup.document.body.clientHeight;
+				if (sizeX == 0 && sizeY == 0) {
+					resize.delay(50);
+					return;
+				}
+
+				var resizeX = frame.x - sizeX;
+				var resizeY = frame.y - sizeY;
+
+				if (resizeX || resizeY) {
+					popup.resizeTo(frame.x + resizeX, frame.y + resizeY);
+				}
+			};
+
+			resize.delay(50);
+		}
 	}
 
 });
+
+})();
