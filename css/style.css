@@ -137,6 +137,11 @@ body {
 -----------------------------------------------------------------------------*/
 
 .toolbar {
+	-webkit-transition: -webkit-filter 350ms ease-out;
+	   -moz-transition:    -moz-filter 350ms ease-out;
+	    -ms-transition:     -ms-filter 350ms ease-out;
+	     -o-transition:      -o-filter 350ms ease-out;
+	        transition:         filter 350ms ease-out;
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing: border-box;
 	    -ms-box-sizing: border-box;
@@ -152,6 +157,14 @@ body {
 	position: absolute;
 	width: 100%;
 	z-index: 50;
+}
+
+.toolbar.background {
+	-webkit-filter: blur(5px);
+	   -moz-filter: blur(5px);
+	    -ms-filter: blur(5px);
+	     -o-filter: blur(5px);
+	        filter: blur(5px);
 }
 
 .toolbar .toolbar-left {
@@ -186,11 +199,11 @@ body {
 }
 
 .toolbar .toolbar-item .title {
-	-webkit-transition: all 100ms ease-out;
-	   -moz-transition: all 100ms ease-out;
-	    -ms-transition: all 100ms ease-out;
-	     -o-transition: all 100ms ease-out;
-	        transition: all 100ms ease-out;
+	-webkit-transition: all 150ms ease-out;
+	   -moz-transition: all 150ms ease-out;
+	    -ms-transition: all 150ms ease-out;
+	     -o-transition: all 150ms ease-out;
+	        transition: all 150ms ease-out;
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing: border-box;
 	    -ms-box-sizing: border-box;
@@ -209,11 +222,11 @@ body {
 /* Items */
 
 .toolbar .toolbar-item .items {
-	-webkit-transition: all 100ms ease-out;
-	   -moz-transition: all 100ms ease-out;
-	    -ms-transition: all 100ms ease-out;
-	     -o-transition: all 100ms ease-out;
-	        transition: all 100ms ease-out;
+	-webkit-transition: all 150ms ease-out;
+	   -moz-transition: all 150ms ease-out;
+	    -ms-transition: all 150ms ease-out;
+	     -o-transition: all 150ms ease-out;
+	        transition: all 150ms ease-out;
 	-webkit-transform-origin: center center;
 	   -moz-transform-origin: center center;
 	    -ms-transform-origin: center center;
@@ -299,11 +312,11 @@ body {
 }
 
 .toolbar .toolbar-item.expand .items .item {
-	-webkit-transition: all 100ms ease-out;
-	   -moz-transition: all 100ms ease-out;
-	    -ms-transition: all 100ms ease-out;
-	     -o-transition: all 100ms ease-out;
-	        transition: all 100ms ease-out;
+	-webkit-transition: all 150ms ease-out;
+	   -moz-transition: all 150ms ease-out;
+	    -ms-transition: all 150ms ease-out;
+	     -o-transition: all 150ms ease-out;
+	        transition: all 150ms ease-out;
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing: border-box;
 	    -ms-box-sizing: border-box;
@@ -447,11 +460,11 @@ body {
 -----------------------------------------------------------------------------*/
 
 .content {
-	-webkit-transition: -webkit-filter 150ms ease-out, opacity 150ms ease-out;
-	   -moz-transition:    -moz-filter 150ms ease-out, opacity 150ms ease-out;
-	    -ms-transition:     -ms-filter 150ms ease-out, opacity 150ms ease-out;
-	     -o-transition:      -o-filter 150ms ease-out, opacity 150ms ease-out;
-	        transition:         filter 150ms ease-out, opacity 150ms ease-out;
+	-webkit-transition: -webkit-filter 350ms ease-out;
+	   -moz-transition:    -moz-filter 350ms ease-out;
+	    -ms-transition:     -ms-filter 350ms ease-out;
+	     -o-transition:      -o-filter 350ms ease-out;
+	        transition:         filter 350ms ease-out;
 	-webkit-box-orient: horizontal;
 	   -moz-box-orient: horizontal;
 	    -ms-box-orient: horizontal;
@@ -473,13 +486,12 @@ body {
 	z-index: 25;
 }
 
-.content.minimize {
-	-webkit-filter: grayscale(1) blur(15px);
-	   -moz-filter: grayscale(1) blur(15px);
-	    -ms-filter: grayscale(1) blur(15px);
-	     -o-filter: grayscale(1) blur(15px);
-	        filter: grayscale(1) blur(15px);
-	opacity: 0.5;
+.content.background {
+	-webkit-filter: blur(10px);
+	   -moz-filter: blur(10px);
+	    -ms-filter: blur(10px);
+	     -o-filter: blur(10px);
+	        filter: blur(10px);
 }
 
 /* Reflection
@@ -535,17 +547,12 @@ body {
 /* Open
 -----------------------------------------------------------------------------*/
 
-.open {
-	-webkit-transition: all 100ms ease-out;
-	   -moz-transition: all 100ms ease-out;
-	    -ms-transition: all 100ms ease-out;
-	     -o-transition: all 100ms ease-out;
-	        transition: all 100ms ease-out;
-	-webkit-transform: scale(0.9);
-	   -moz-transform: scale(0.9);
-	    -ms-transform: scale(0.9);
-	     -o-transform: scale(0.9);
-	        transform: scale(0.9);
+.open-dialog {
+	-webkit-transition: all 350ms ease-out;
+	   -moz-transition: all 350ms ease-out;
+	    -ms-transition: all 350ms ease-out;
+	     -o-transition: all 350ms ease-out;
+	        transition: all 350ms ease-out;
 	-webkit-transform-origin: center center;
 	   -moz-transform-origin: center center;
 	    -ms-transform-origin: center center;
@@ -556,107 +563,110 @@ body {
 	    -ms-box-sizing: border-box;
 	     -o-box-sizing: border-box;
 	        box-sizing: border-box;
-	background: rgba(0, 0, 0, 0.75);
-	border-radius: 8px;
-	left: 50%;
-	height: 110px;
-	margin-left: -240px;
-	margin-top: -55px;
+    -webkit-box-pack: center;
+       -moz-box-pack: center;
+        -ms-box-pack: center;
+         -o-box-pack: center;
+            box-pack: center;
+    -webkit-box-align: center;
+       -moz-box-align: center;
+        -ms-box-align: center;
+         -o-box-align: center;
+            box-align: center;
+	background: rgba(0, 0, 0, 0.70);
+	color: #fff;
+	display: -webkit-box;
+	display:    -moz-box;
+	display:     -ms-box;
+	display:      -o-box;
+	display:         box;
+	font-size: 24px;
+	height: 100%;
+	left: 0px;
+	padding: 18px;
 	opacity: 0;
-	padding: 16px;
 	position: absolute;
 	pointer-events: none;
-	top: 50%;
-	width: 480px;
+	top: 0px;
+	width: 100%;
 	z-index: 75;
 }
 
-.open.visible {
-	-webkit-transform: scale(1);
-	   -moz-transform: scale(1);
-	    -ms-transform: scale(1);
-	     -o-transform: scale(1);
-	        transform: scale(!);
+.open-dialog.visible {
 	pointer-events: auto;
 	opacity: 1;
 }
 
-.open label {
-	color: #fff;
+.open-dialog label {
 	display: block;
-	font-size: 24px;
-	margin-bottom: 16px;
+	margin-bottom: 18px;
+	text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
 }
 
-.open input[type=text] {
+.open-dialog input[type=text] {
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing: border-box;
 	    -ms-box-sizing: border-box;
 	     -o-box-sizing: border-box;
 	        box-sizing: border-box;
+	-webkit-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
 	display: block;
 	border: none;
 	border-radius: 6px;
 	color: #666;
-	float: left;
 	font-family: 'HelveticaNeue', sans-serif;
 	font-weight: normal;
-	font-size: 20px;
-	height: 35px;
+	font-size: 22px;
+	height: 50px;
+	margin-bottom: 18px;
 	padding: 0px;
-	padding-left: 16px;
-	padding-right: 16px;
-	width: 350px;
+	padding-left: 8px;
+	padding-right: 8px;
+	width: 500px;
 }
 
-.open input[type=submit] {
+.open-dialog input.accept-button,
+.open-dialog input.cancel-button {
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing: border-box;
 	    -ms-box-sizing: border-box;
 	     -o-box-sizing: border-box;
 	        box-sizing: border-box;
-	-webkit-transition: all 100ms ease-out;
-	   -moz-transition: all 100ms ease-out;
-	    -ms-transition: all 100ms ease-out;
-	     -o-transition: all 100ms ease-out;
-	        transition: all 100ms ease-out;
-	background: #45A5D2;
+	-webkit-transition: all 150ms ease-out;
+	   -moz-transition: all 150ms ease-out;
+	    -ms-transition: all 150ms ease-out;
+	     -o-transition: all 150ms ease-out;
+	        transition: all 150ms ease-out;
 	border: none;
 	border-radius: 6px;
 	cursor: pointer;
-	color: #ffffff;
 	display: block;
 	font-family: 'HelveticaNeue', sans-serif;
 	font-weight: normal;
-	font-size: 20px;
+	font-size: 18px;
 	float: right;
-	height: 35px;
+	height: 40px;
+	margin-left: 18px;
 	padding: 0px;
 	text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
 	text-align: center;
-	width: 80px;
+	width: 100px;
 }
 
-.open input[type=submit]:hover {
+.open-dialog input.accept-button {
+	background: #45A5D2;
+	color: #ffffff;
+}
+
+.open-dialog input.accept-button:hover {
 	background: #59b6e2;
 }
 
-.open .button.button-close {
-	-webkit-transition: all 100ms ease-out;
-	   -moz-transition: all 100ms ease-out;
-	    -ms-transition: all 100ms ease-out;
-	     -o-transition: all 100ms ease-out;
-	        transition: all 100ms ease-out;
-	background: url(../images/close.png) no-repeat;
-	cursor: pointer;
-	height: 15px;
-	top: 16px;
-	opacity: 0.75;
-	position: absolute;
-	right: 16px;
-	width: 15px;
+.open-dialog input.cancel-button {
+	background: rgba(255, 255, 255, 0.25);
+	color: #ffffff;
 }
 
-.open .button.button-close:hover {
-	opacity: 1;
+.open-dialog input.cancel-button:hover {
+	background: #000;
 }

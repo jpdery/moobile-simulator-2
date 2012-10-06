@@ -1,75 +1,6 @@
 /*
 ---
 
-name: Element.Style.Vendor
-
-description: Automatically adds vendor prefix to styles
-
-license: MIT-style license.
-
-authors:
-	- Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-
-requires:
-	- Core/Event
-	- Core/Element
-	- Core/Element.Event
-
-provides:
-	- Element.Style.Vendor
-
-...
-*/
-
-(function() {
-
-var setStyle = Element.prototype.setStyle;
-var getStyle = Element.prototype.getStyle;
-
-var prefixes = ['Khtml', 'O', 'Ms', 'Moz', 'Webkit'];
-
-var cache = {};
-
-Element.implement({
-
-	getPrefixed: function (property) {
-
-		property = property.camelCase();
-
-		if (property in this.style)
-			return property;
-
-		if (cache[property] !== undefined)
-			return cache[property];
-
-		var suffix = property.charAt(0).toUpperCase() + property.slice(1);
-
-		for (var i = 0; i < prefixes.length; i++) {
-			var prefixed = prefixes[i] + suffix;
-			if (prefixed in this.style) {
-				cache[property] = prefixed;
-				break
-			}
-		}
-
-		return cache[property];
-	},
-
-	setStyle: function (property, value) {
-		return setStyle.call(this, this.getPrefixed(property), value);
-	},
-
-	getStyle: function (property) {
-		return getStyle.call(this, this.getPrefixed(property));
-	}
-
-});
-
-})();
-
-/*
----
-
 name: Class.Binds
 
 description: A clean Class.Binds Implementation
@@ -202,10 +133,13 @@ Moobile.Simulator = new Class({
 	 * @since  0.1
 	 */
 	initialize: function(options) {
+
 		document.body.addClass(Browser.name);
 		document.body.addClass(Browser.name + '-' + Browser.version);
+
 		this.setOptions(options);
 		this.build();
+
 		return this;
 	},
 
@@ -222,6 +156,8 @@ Moobile.Simulator = new Class({
 		this.screenElement = new Element('div.simulator-screen').inject(this.facadeElement);
 		this.iframeElement = new Element('iframe[scrolling=no]').inject(this.screenElement);
 
+		this.iframeElement.addEvent('load', this.bound('_onApplicationLoad'));
+
 		return this;
 	},
 
@@ -230,11 +166,14 @@ Moobile.Simulator = new Class({
 	 * @since  0.2
 	 */
 	destroy: function() {
+
+		this.iframeElement.removeEvent('load', this.bound('_onApplicationLoad'));
+		this.iframeElement = null;
+
 		this.deviceElement.destroy();
 		this.deviceElement = null;
 		this.facadeElement = null;
 		this.screenElement = null;
-		this.iframeElement = null;
 	},
 
 	/**
@@ -246,37 +185,19 @@ Moobile.Simulator = new Class({
 		if (this.deviceAnimating || this.deviceName === name)
 			return this;
 
-		var onPlay = function(animation) {
-			if (animation.getName() === '2') this.setDevice(name);
+		var onPlay = function(anim) {
+			if (anim === '2') this.setDevice(name);
 		}.bind(this);
 
-		var anim = new Animation.List();
-		anim.addEvent('play', onPlay);
-		anim.addEvent('start', this.bound('_onDeviceAnimationStart'));
-		anim.addEvent('end', this.bound('_onDeviceAnimationEnd'));
-		anim.setAnimation('1', new Animation(this.deviceElement).setAnimationClass('hide-device'));
-		anim.setAnimation('2', new Animation(this.deviceElement).setAnimationClass('show-device'));
-		anim.start();
+		var animation = this._createAnimationList();
+		animation.setAnimation('1', new Animation(this.deviceElement).setAnimationClass('hide-device'));
+		animation.setAnimation('2', new Animation(this.deviceElement).setAnimationClass('show-device'));
+		animation.addEvent('play', onPlay);
+		animation.start();
+
+		this.fireEvent('beforedevicechange', name);
 
 		return this;
-	},
-
-	/**
-	 * @hidden
-	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.2
-	 */
-	_onDeviceAnimationStart: function() {
-		this.deviceAnimating = true;
-	},
-
-	/**
-	* @hidden
-	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.2
-	 */
-	_onDeviceAnimationEnd: function() {
-		this.deviceAnimating = false;
 	},
 
 	/**
@@ -319,29 +240,27 @@ Moobile.Simulator = new Class({
 		if (this.deviceAnimating || this.deviceOrientation === orientation)
 			return this;
 
-		var onPlay = function(animation) {
-			if (animation.getName() === '2') this.setDeviceOrientation(orientation);
-		}.bind(this);
+		var onPlay = function(name) {
+			if (name === '2') this.setDeviceOrientation(orientation);
+		}.bind(this)
 
-		var anim = new Animation.List();
-		anim.addEvent('play', onPlay);
-		anim.addEvent('start', this.bound('_onDeviceAnimationStart'));
-		anim.addEvent('end', this.bound('_onDeviceAnimationEnd'));
+		var animation = this._createAnimationList();
 
 		switch (orientation) {
-
 			case 'portrait':
-				anim.setAnimation('1', new Animation(this.deviceElement).setAnimationClass('rotate-device-portrait'));
-				anim.setAnimation('2', new Animation(this.screenElement).setAnimationClass('rotate-screen-portrait'));
+				animation.setAnimation('1', new Animation(this.deviceElement).setAnimationClass('rotate-device-portrait'));
+				animation.setAnimation('2', new Animation(this.screenElement).setAnimationClass('rotate-screen-portrait'));
 				break;
-
 			case 'landscape':
-				anim.setAnimation('1', new Animation(this.deviceElement).setAnimationClass('rotate-device-landscape'));
-				anim.setAnimation('2', new Animation(this.screenElement).setAnimationClass('rotate-screen-landscape'));
+				animation.setAnimation('1', new Animation(this.deviceElement).setAnimationClass('rotate-device-landscape'));
+				animation.setAnimation('2', new Animation(this.screenElement).setAnimationClass('rotate-screen-landscape'));
 				break;
 		}
 
-		anim.start();
+		animation.addEvent('play', onPlay);
+		animation.start();
+
+		this.fireEvent('beforedeviceorientationchange', orientation);
 
 		return this;
 	},
@@ -360,6 +279,12 @@ Moobile.Simulator = new Class({
 		this.deviceElement.removeClass('portrait');
 		this.deviceElement.removeClass('landscape');
 		this.deviceElement.addClass(orientation);
+
+		if (this.applicationWindow) {
+			this.applicationWindow.orientation = orientation === 'portrait' ? 0 : 90;
+			this.applicationWindow.orientationName = orientation;
+			this.applicationWindow.fireEvent('orientationchange');
+		}
 
 		this.fireEvent('deviceorientationchange', orientation);
 
@@ -452,10 +377,10 @@ Moobile.Simulator = new Class({
 			return this;
 
 		this.applicationPath = path;
-		this.applicationLoaded = false;
 		this.applicationWindow = null;
-
 		this.iframeElement.set('src', path + '?' + String.uniqueID());
+
+		this.fireEvent('applicationchange', path);
 
 		return this;
 	},
@@ -513,12 +438,11 @@ Moobile.Simulator = new Class({
 	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
 	 * @since  0.2
 	 */
-	_onAppLoad: function() {
-		if (this.applicationLoaded === false) {
-			this.applicationLoaded = true;
-			this.applicationWindow = this.iframeElement.contentWindow;
-			this.device.applicationDidLoad();
-		}
+	_createAnimationList: function() {
+		var list = new Animation.List();
+		list.addEvent('start', this.bound('_onDeviceAnimationStart'));
+		list.addEvent('end', this.bound('_onDeviceAnimationEnd'));
+		return list;
 	},
 
 	/**
@@ -526,13 +450,27 @@ Moobile.Simulator = new Class({
 	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
 	 * @since  0.2
 	 */
-	_onAppReady: function() {
+	_onDeviceAnimationStart: function() {
+		this.deviceAnimating = true;
+	},
 
-		if (this.applicationWindow === null) {
-			this.applicationWindow = this.iframeElement.contentWindow;
-		}
+	/**
+	 * @hidden
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	_onDeviceAnimationEnd: function() {
+		this.deviceAnimating = false;
+	},
 
-		this.applicationWindow.orientation     = this.deviceOrientation === 'portrait' ? 0 : 90;
+	/**
+	 * @hidden
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	_onApplicationLoad: function() {
+		this.applicationWindow = this.iframeElement.contentWindow;
+		this.applicationWindow.orientation = this.deviceOrientation === 'portrait' ? 0 : 90;
 		this.applicationWindow.orientationName = this.deviceOrientation;
 		this.device.applicationDidStart();
 	}
@@ -683,14 +621,6 @@ Moobile.Simulator.Device = new Class({
 	 * @since  0.2
 	 */
 	applicationDidLoad: function() {
-
-	},
-
-	/**
-	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.2
-	 */
-	applicationDidStart: function() {
 
 	},
 
@@ -1213,51 +1143,6 @@ Moobile.Simulator.Device['iPhone-Retina'] = new Class({
 	}
 
 });
-
-
-/*
----
-
-name: Event.CSS3
-
-description: Provides CSS3 events.
-
-license: MIT-style license.
-
-authors:
-	- Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-
-requires:
-	- Core/Event
-	- Core/Element
-	- Core/Element.Event
-
-provides:
-	- Event.CSS3
-
-...
-*/
-
-(function() {
-
-var prefix = '';
-if (Browser.safari || Browser.chrome || Browser.Platform.ios) {
-	prefix = 'webkit';
-} else if (Browser.firefox) {
-	prefix = 'Moz';
-} else if (Browser.opera) {
-	prefix = 'o';
-} else if (Browser.ie) {
-	prefix = 'ms';
-}
-
-Element.NativeEvents[prefix + 'TransitionEnd'] = 2;
-Element.Events['transitionend'] = { base: (prefix + 'TransitionEnd') };
-
-Element.NativeEvents[prefix + 'AnimationEnd'] = 2;
-Element.Events['animationend'] = { base: (prefix + 'AnimationEnd') };
-
-})();
 
 
 /*
@@ -1948,7 +1833,7 @@ Animation.List = new Class({
 	 * @since  0.1.0
 	 */
 	onAnimationStart: function() {
-		this.fireEvent('play', this.animations[this.currentAnimationIndex]);
+		this.fireEvent('play', this.animations[this.currentAnimationIndex].getName());
 	},
 
 	/**
@@ -1957,7 +1842,7 @@ Animation.List = new Class({
 	 * @since  0.1.0
 	 */
 	onAnimationStop: function() {
-		this.fireEvent('stop', this.animations[this.currentAnimationIndex]);
+		this.fireEvent('stop', this.animations[this.currentAnimationIndex].getName());
 	},
 
 	/**
@@ -1975,6 +1860,51 @@ Animation.List = new Class({
 	},
 
 });
+
+
+/*
+---
+
+name: Event.CSS3
+
+description: Provides CSS3 events.
+
+license: MIT-style license.
+
+authors:
+	- Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+
+requires:
+	- Core/Event
+	- Core/Element
+	- Core/Element.Event
+
+provides:
+	- Event.CSS3
+
+...
+*/
+
+(function() {
+
+var prefix = '';
+if (Browser.safari || Browser.chrome || Browser.Platform.ios) {
+	prefix = 'webkit';
+} else if (Browser.firefox) {
+	prefix = 'Moz';
+} else if (Browser.opera) {
+	prefix = 'o';
+} else if (Browser.ie) {
+	prefix = 'ms';
+}
+
+Element.NativeEvents[prefix + 'TransitionEnd'] = 2;
+Element.Events['transitionend'] = { base: (prefix + 'TransitionEnd') };
+
+Element.NativeEvents[prefix + 'AnimationEnd'] = 2;
+Element.Events['animationend'] = { base: (prefix + 'AnimationEnd') };
+
+})();
 
 
 /*

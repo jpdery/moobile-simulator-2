@@ -168,14 +168,13 @@ new Unit({
 
 		var device = Settings.getDevice();
 
-		var content = document.getElement('.content');
-		var toolbar = document.getElement('.toolbar');
+		this.toolbar = document.getElement('.toolbar');
 
-		this.openToolbarItem = toolbar.getElement('.toolbar-item-open');
-		this.deviceToolbarItem = toolbar.getElement('.toolbar-item-device');
-		this.optionToolbarItem = toolbar.getElement('.toolbar-item-option');
-		this.detachToolbarItem = toolbar.getElement('.toolbar-item-detach');
-		this.orientationToolbarItem = toolbar.getElement('.toolbar-item-orientation');
+		this.openToolbarItem = this.toolbar.getElement('.toolbar-item-open');
+		this.deviceToolbarItem = this.toolbar.getElement('.toolbar-item-device');
+		this.optionToolbarItem = this.toolbar.getElement('.toolbar-item-option');
+		this.detachToolbarItem = this.toolbar.getElement('.toolbar-item-detach');
+		this.orientationToolbarItem = this.toolbar.getElement('.toolbar-item-orientation');
 
 		this.openToolbarItem.addEvent('click:relay(.item)', this.onSelectOpen.bind(this));
 		this.deviceToolbarItem.addEvent('click:relay(.item)', this.onSelectDevice.bind(this));
@@ -201,6 +200,10 @@ new Unit({
 		this.subscribe('simulator.device change', this.onSimulatorDeviceChange.bind(this));
 		this.subscribe('simulator.device option change', this.onSimulatorDeviceOptionChange.bind(this));
 		this.subscribe('simulator.device orientation change', this.onSimulatorDeviceOrientationChange.bind(this));
+		this.subscribe('open dialog.show', this.onOpenDialogShow.bind(this));
+		this.subscribe('open dialog.hide', this.onOpenDialogHide.bind(this));
+
+		document.addEvent('keydown', this.onKeyDown.bind(this));
 	},
 
 	/**
@@ -254,9 +257,43 @@ new Unit({
 
 		Settings.setDeviceScale(Settings.getDevice(), value);
 
+		var scale = value / 100;
+
 		var content = document.getElement('.content');
 		if (content) {
-			content.setStyle('transform', 'scale(' + (value / 100) + ')');
+			content.setStyles({
+				'-webkit-transform': 'scale(' + scale + ')',
+				   '-moz-transform': 'scale(' + scale + ')',
+				    '-ms-transform': 'scale(' + scale + ')',
+				     '-o-transform': 'scale(' + scale + ')',
+				       '-transform': 'scale(' + scale + ')',
+			});
+		}
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	onKeyDown: function(e) {
+
+		switch(e.key) {
+			case 'left':
+				this.publish('select orientation', 'portrait');
+				e.stop();
+				break;
+			case 'right':
+				this.publish('select orientation', 'landscape');
+				e.stop();
+				break;
+			case 'up':
+				this.scale.set(Settings.getDeviceScale(Settings.getDevice()) + 2);
+				e.stop();
+				break;
+			case 'down':
+				this.scale.set(Settings.getDeviceScale(Settings.getDevice()) - 2);
+				e.stop();
+				break;
 		}
 	},
 
@@ -305,12 +342,10 @@ new Unit({
 	 * @since  0.2
 	 */
 	onSimulatorDeviceOrientationChange: function(simulator, orientation) {
-
 		var current = this.orientationToolbarItem.getElement('.items .item.active');
 		if (current) {
 			current.removeClass('active');
 		}
-
 		var item = this.orientationToolbarItem.getElement('.item[data-value=' + orientation + ']');
 		if (item) {
 			item.addClass('active');
@@ -323,7 +358,23 @@ new Unit({
 	 */
 	onSimulatorOpenFile: function(file) {
 		this.detachToolbarItem.toggleClass('disabled', !file);
-	}
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
+	onOpenDialogShow: function() {
+		this.toolbar.addClass('background');
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
+	onOpenDialogHide: function() {
+		this.toolbar.removeClass('background');
+	},
 
 });
 
@@ -345,12 +396,16 @@ new Unit({
 
 		document.body.addClass(Browser.name);
 
-		this.reflection = document.getElement('.content .reflection');
-		this.subscribe('toolbar.select open', this.onToolbarSelectOpen.bind(this));
+		this.content = document.getElement('.content');
+
+		this.reflection = this.content.getElement('.reflection');
 		this.subscribe('toolbar.select device', this.onToolbarSelectDevice.bind(this));
 		this.subscribe('toolbar.select option', this.onToolbarSelectOption.bind(this));
 		this.subscribe('toolbar.select detach', this.onToolbarSelectDetach.bind(this));
 		this.subscribe('toolbar.select orientation', this.onToolbarSelectOrientation.bind(this));
+		this.subscribe('open dialog.input', this.onOpenDialogInput.bind(this));
+		this.subscribe('open dialog.show', this.onOpenDialogShow.bind(this));
+		this.subscribe('open dialog.hide', this.onOpenDialogHide.bind(this));
 
 		var options = {
 			container: this.reflection
@@ -360,7 +415,7 @@ new Unit({
 		this.simulator.addEvent('devicechange', this.onDeviceChange.bind(this));
 		this.simulator.addEvent('deviceoptionchange', this.onDeviceOptionChange.bind(this));
 		this.simulator.addEvent('deviceorientationchange', this.onDeviceOrientationChange.bind(this));
-		this.simulator.addEvent('deviceorientationanimationstart', this.onDeviceOrientationAnimationStart.bind(this));
+		this.simulator.addEvent('beforedeviceorientationchange', this.onBeforeDeviceOrientationChange.bind(this));
 
 		this.simulator.setDevice(Settings.getDevice());
 		this.simulator.setApplication(Settings.getApplication());
@@ -372,10 +427,10 @@ new Unit({
 	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
 	 * @since  0.1
 	 */
-	reflect: function() {
+	reflect: function(s, o) {
 
-		var s = this.simulator.getDeviceSize();
-		var o = this.simulator.getDeviceOrientation();
+		s = s || this.simulator.getDeviceSize();
+		o = o || this.simulator.getDeviceOrientation();
 
 		switch (o) {
 			case 'portrait':  this.reflection.setStyle('height', s.y); break;
@@ -420,60 +475,26 @@ new Unit({
 		this.reflect();
 	},
 
-	onDeviceOrientationAnimationStart: function() {
-		this.reflect();
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @edited 0.2
+	 * @since  0.1
+	 */
+	onBeforeDeviceOrientationChange: function(orientation) {
+		this.reflect(null, orientation);
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	onDeviceApplicationChange: function(application) {
+		Settings.setApplication(application);
 	},
 
 	// -------------------------------------------------------------------------
 	// Subscribed
 	// -------------------------------------------------------------------------
-
-	/**
-	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.1
-	 */
-	onToolbarSelectOpen: function(device) {
-
-		var element = document.getElement('.open');
-		var content = document.getElement('.content');
-
-		var form  = element.getElement('form');
-		var path  = element.getElement('form input[type=text]');
-		var close = element.getElement('.button-close');
-
-		var application = Settings.getApplication();
-		if (application) {
-			path.value = application;
-		}
-
-		path.focus();
-
-		element.toggleClass('visible');
-		content.toggleClass('minimize');
-
-		var onClose = function() {
-			element.toggleClass('visible');
-			content.toggleClass('minimize');
-		}.bind(this);
-
-		var onSubmit = function(e) {
-
-			e.stop();
-
-			var application = path.value;
-			if (application) {
-				Settings.setApplication(application);
-				this.simulator.setApplication(application);
-			}
-
-			element.toggleClass('visible');
-			content.toggleClass('minimize');
-
-		}.bind(this);
-
-		form.addEvent('submit:once', onSubmit);
-		close.addEvent('click:once', onClose);
-	},
 
 	/**
 	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
@@ -490,9 +511,7 @@ new Unit({
 	 */
 	onToolbarSelectOption: function(id) {
 		var option = this.simulator.getDeviceOption(id);
-		if (option) {
-			this.simulator.setDeviceOption(id, !option.active);
-		}
+		if (option)  this.simulator.setDeviceOption(id, !option.active);
 	},
 
 	/**
@@ -510,23 +529,21 @@ new Unit({
 	onToolbarSelectDetach: function() {
 
 		var iframe = document.getElement('iframe');
+
 		var source = iframe.get('src');
 		if (source) {
 
 			var frame = iframe.getSize();
 			var popup = window.open(source, '_blank', 'height=' + frame.y + ',width=' + frame.x + ',location=no,menubar=no,scrollbars=no,status=no,titlebar=no,toolbar=no');
 			var resize = function() {
-
 				var sizeX = popup.document.body.clientWidth;
 				var sizeY = popup.document.body.clientHeight;
 				if (sizeX == 0 && sizeY == 0) {
 					resize.delay(50);
 					return;
 				}
-
 				var resizeX = frame.x - sizeX;
 				var resizeY = frame.y - sizeY;
-
 				if (resizeX || resizeY) {
 					popup.resizeTo(frame.x + resizeX, frame.y + resizeY);
 				}
@@ -534,6 +551,140 @@ new Unit({
 
 			resize.delay(50);
 		}
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
+	onOpenDialogShow: function() {
+		this.content.addClass('background');
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
+	onOpenDialogHide: function() {
+		this.content.removeClass('background');
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
+	onOpenDialogInput: function(path) {
+		this.simulator.setApplication(path);
+	}
+
+});
+
+/**
+ * Open Unit
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @edited 0.2
+ * @since  0.1
+ */
+new Unit({
+
+	Prefix: 'open dialog',
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	visible: false,
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	readySetup: function() {
+
+		document.addEvent('keyup', this.onKeyPress.bind(this));
+
+		this.dialog = document.getElement('.open-dialog');
+
+		this.path = this.dialog.getElement('input[type=text]');
+		this.path.value = Settings.getApplication();
+
+		this.acceptButton = this.dialog.getElement('.accept-button');
+		this.cancelButton = this.dialog.getElement('.cancel-button');
+		this.acceptButton.addEvent('click', this.onAcceptButtonClick.bind(this));
+		this.cancelButton.addEvent('click', this.onCancelButtonClick.bind(this));
+
+		this.subscribe('toolbar.select open', this.onToolbarSelectOpen.bind(this));
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	show: function() {
+		if (this.visible === false) {
+			this.visible = true;
+			this.dialog.addClass('visible');
+			this.publish('show');
+		}
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	hide: function() {
+		if (this.visible) {
+			this.visible = false;
+			this.dialog.removeClass('visible');
+			this.publish('hide');
+		}
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	onKeyPress: function(e) {
+		switch (e.key) {
+			case 'esc':
+				this.hide();
+				e.stop();
+				break;
+			case 'enter':
+				this.publish('input', this.path.value);
+				this.hide();
+				e.stop();
+				break;
+		}
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	onAcceptButtonClick: function(e) {
+		this.publish('input', this.path.value);
+		this.hide();
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	onCancelButtonClick: function(e) {
+		this.hide();
+	},
+
+	// -------------------------------------------------------------------------
+	// Subscribed
+	// -------------------------------------------------------------------------
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	onToolbarSelectOpen: function() {
+		this.show();
 	}
 
 });
