@@ -277,23 +277,22 @@ new Unit({
 	 */
 	onKeyDown: function(e) {
 
-		switch(e.key) {
-			case 'left':
-				this.publish('select orientation', 'portrait');
-				e.stop();
-				break;
-			case 'right':
-				this.publish('select orientation', 'landscape');
-				e.stop();
-				break;
-			case 'up':
-				this.scale.set(Settings.getDeviceScale(Settings.getDevice()) + 2);
-				e.stop();
-				break;
-			case 'down':
-				this.scale.set(Settings.getDeviceScale(Settings.getDevice()) - 2);
-				e.stop();
-				break;
+		if (e.key === 'left' ||
+			e.key === 'right') {
+			e.stop();
+			if (e.key === 'left')  this.publish('select orientation', 'portrait');
+			if (e.key === 'right') this.publish('select orientation', 'landscape');
+			return;
+		}
+
+		if (e.key === 'up' ||
+			e.key === 'down') {
+			e.stop();
+			var increment = 0;
+			if (e.key === 'up')   increment = 2;
+			if (e.key === 'down') increment = -2;
+			 this.scale.set(Settings.getDeviceScale(Settings.getDevice()) + increment);
+			return;
 		}
 	},
 
@@ -342,10 +341,12 @@ new Unit({
 	 * @since  0.2
 	 */
 	onSimulatorDeviceOrientationChange: function(simulator, orientation) {
+
 		var current = this.orientationToolbarItem.getElement('.items .item.active');
 		if (current) {
 			current.removeClass('active');
 		}
+
 		var item = this.orientationToolbarItem.getElement('.item[data-value=' + orientation + ']');
 		if (item) {
 			item.addClass('active');
@@ -414,6 +415,7 @@ new Unit({
 		this.simulator = new Moobile.Simulator(options);
 		this.simulator.addEvent('devicechange', this.onDeviceChange.bind(this));
 		this.simulator.addEvent('deviceoptionchange', this.onDeviceOptionChange.bind(this));
+		this.simulator.addEvent('deviceapplicationchange', this.onDeviceApplicationChange.bind(this));
 		this.simulator.addEvent('deviceorientationchange', this.onDeviceOrientationChange.bind(this));
 		this.simulator.addEvent('beforedeviceorientationchange', this.onBeforeDeviceOrientationChange.bind(this));
 
@@ -645,16 +647,11 @@ new Unit({
 	 * @since  0.2
 	 */
 	onKeyPress: function(e) {
-		switch (e.key) {
-			case 'esc':
-				this.hide();
-				e.stop();
-				break;
-			case 'enter':
-				this.publish('input', this.path.value);
-				this.hide();
-				e.stop();
-				break;
+		if (e.key === 'esc' ||
+			e.key === 'enter') {
+			e.stop();
+			if (e.key === 'enter') this.publish('input', this.path.value);
+			this.hide();
 		}
 	},
 

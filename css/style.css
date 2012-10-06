@@ -160,11 +160,11 @@ body {
 }
 
 .toolbar.background {
-	-webkit-filter: blur(5px);
-	   -moz-filter: blur(5px);
-	    -ms-filter: blur(5px);
-	     -o-filter: blur(5px);
-	        filter: blur(5px);
+	-webkit-filter: blur(10px);
+	   -moz-filter: blur(10px);
+	    -ms-filter: blur(10px);
+	     -o-filter: blur(10px);
+	        filter: blur(10px);
 }
 
 .toolbar .toolbar-left {
@@ -487,11 +487,11 @@ body {
 }
 
 .content.background {
-	-webkit-filter: blur(10px);
-	   -moz-filter: blur(10px);
-	    -ms-filter: blur(10px);
-	     -o-filter: blur(10px);
-	        filter: blur(10px);
+	-webkit-filter: blur(20px);
+	   -moz-filter: blur(20px);
+	    -ms-filter: blur(20px);
+	     -o-filter: blur(20px);
+	        filter: blur(20px);
 }
 
 /* Reflection
@@ -573,7 +573,7 @@ body {
         -ms-box-align: center;
          -o-box-align: center;
             box-align: center;
-	background: rgba(0, 0, 0, 0.70);
+	background: rgba(0, 0, 0, 0.50);
 	color: #fff;
 	display: -webkit-box;
 	display:    -moz-box;
@@ -590,6 +590,12 @@ body {
 	top: 0px;
 	width: 100%;
 	z-index: 75;
+}
+
+.open-dialog-content {
+	border-radius: 12px;
+	background: rgba(0, 0, 0, 0.50);
+	padding: 24px;
 }
 
 .open-dialog.visible {
@@ -617,7 +623,7 @@ body {
 	font-family: 'HelveticaNeue', sans-serif;
 	font-weight: normal;
 	font-size: 22px;
-	height: 50px;
+	height: 55px;
 	margin-bottom: 18px;
 	padding: 0px;
 	padding-left: 8px;
@@ -668,5 +674,5 @@ body {
 }
 
 .open-dialog input.cancel-button:hover {
-	background: #000;
+	background: #59b6e2;
 }

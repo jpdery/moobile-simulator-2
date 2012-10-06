@@ -380,7 +380,7 @@ Moobile.Simulator = new Class({
 		this.applicationWindow = null;
 		this.iframeElement.set('src', path + '?' + String.uniqueID());
 
-		this.fireEvent('applicationchange', path);
+		this.fireEvent('deviceapplicationchange', path);
 
 		return this;
 	},
@@ -472,7 +472,7 @@ Moobile.Simulator = new Class({
 		this.applicationWindow = this.iframeElement.contentWindow;
 		this.applicationWindow.orientation = this.deviceOrientation === 'portrait' ? 0 : 90;
 		this.applicationWindow.orientationName = this.deviceOrientation;
-		this.device.applicationDidStart();
+		this.device.applicationDidLoad();
 	}
 
 });
@@ -781,6 +781,7 @@ Moobile.Simulator.Device['iOS'] = new Class({
 		this.glare.destroy();
 		this.glare = null;
 		this.statusBar.destroy();
+		this.statusBar = null;
 		this.statusBarTime = null;
 		this.statusBarNetwork = null;
 		this.statusBarBattery = null;
@@ -815,100 +816,6 @@ Moobile.Simulator.Device['iOS'] = new Class({
 	}
 
 });
-
-/*
----
-
-name: Device.iPhone
-
-description:
-
-license: MIT-style license.
-
-author:
-	- Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-
-requires:
-	- Device
-
-provides:
-	- Device.iPhone
-
-...
-*/
-
-Moobile.Simulator.Device['iPhone'] = new Class({
-
-	Extends: Moobile.Simulator.Device['iOS'],
-
-	/**
-	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.2
-	 */
-	safariBar: null,
-
-	/**
-	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.2
-	 */
-	buttonBar: null,
-
-	/**
-	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.1
-	 */
-	setup: function() {
-
-		this.parent();
-
-		this.require('iPhone/styles.css');
-
-		var payload = this.simulator.getIframeElement();
-		var wrapper = this.simulator.getDeviceElement();
-
-		this.safariBar = new Element('div.simulator-safari-bar');
-		this.buttonBar = new Element('div.simulator-button-bar');
-		this.safariBar.inject(payload, 'before');
-		this.buttonBar.inject(payload, 'after');
-
-		this.defineOption('safari-bar', 'Show Safari Navigation Bar', {
-			active: false,
-			enable:  function() { wrapper.addClass('with-safari-bar') },
-			disable: function() { wrapper.removeClass('with-safari-bar') }
-		});
-
-		this.defineOption('tool-bar', 'Show Safari Toolbar', {
-			active: false,
-			enable:  function() { wrapper.addClass('with-button-bar') },
-			disable: function() { wrapper.removeClass('with-button-bar') }
-		});
- 	},
-
-	/**
-	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.1
-	 */
-	teardown: function() {
-		this.safariBar.destroy();
-		this.safariBar = null;
-		this.buttonBar.destroy();
-		this.buttonBar = null;
-		this.parent();
-	},
-
-	/**
-	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.1
-	 */
-	getSize: function() {
-		return {
-			x: 382,
-			y: 744
-		};
-	}
-
-});
-
 
 /*
 ---
@@ -996,7 +903,7 @@ Moobile.Simulator.Device['iPad'] = new Class({
 /*
 ---
 
-name: Device.iPadRetina
+name: Device.iPhone4
 
 description:
 
@@ -1009,61 +916,79 @@ requires:
 	- Device
 
 provides:
-	- Device.iPadRetina
+	- Device.iPhone4
 
 ...
 */
 
-Moobile.Simulator.Device['iPad-Retina'] = new Class({
+Moobile.Simulator.Device['iPhone4'] = new Class({
 
-	Extends: Moobile.Simulator.Device['iPad'],
+	Extends: Moobile.Simulator.Device['iOS'],
 
 	/**
 	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
 	 * @since  0.2
+	 */
+	safariBar: null,
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	buttonBar: null,
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
 	 */
 	setup: function() {
+
 		this.parent();
-		this.require('iPad-Retina/styles.css');
+
+		this.require('iPhone4/styles.css');
+
+		var payload = this.simulator.getIframeElement();
+		var wrapper = this.simulator.getDeviceElement();
+
+		this.safariBar = new Element('div.simulator-safari-bar');
+		this.buttonBar = new Element('div.simulator-button-bar');
+		this.safariBar.inject(payload, 'before');
+		this.buttonBar.inject(payload, 'after');
+
+		this.defineOption('safari-bar', 'Show Safari Navigation Bar', {
+			active: false,
+			enable:  function() { wrapper.addClass('with-safari-bar') },
+			disable: function() { wrapper.removeClass('with-safari-bar') }
+		});
+
+		this.defineOption('tool-bar', 'Show Safari Toolbar', {
+			active: false,
+			enable:  function() { wrapper.addClass('with-button-bar') },
+			disable: function() { wrapper.removeClass('with-button-bar') }
+		});
  	},
 
 	/**
 	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.2
+	 * @since  0.1
 	 */
- 	teardown: function() {
-
- 		var applicationWindow = this.simulator.getApplicationWindow();
- 		if (applicationWindow) {
- 			applicationWindow.document.body.style.zoom = null;
- 		}
-
- 		this.parent();
- 	},
-
-	/**
-	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.2
-	 */
-	getSize: function() {
-		return {
-			x: 1956,
-			y: 2536
-		};
+	teardown: function() {
+		this.safariBar.destroy();
+		this.safariBar = null;
+		this.buttonBar.destroy();
+		this.buttonBar = null;
+		this.parent();
 	},
 
 	/**
 	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.2
+	 * @since  0.1
 	 */
-	applicationDidStart: function() {
-
-		this.parent();
-
- 		var applicationWindow = this.simulator.getApplicationWindow();
- 		if (applicationWindow) {
- 			applicationWindow.document.body.style.zoom = '200%';
- 		}
+	getSize: function() {
+		return {
+			x: 382,
+			y: 744
+		};
 	}
 
 });
@@ -1072,7 +997,7 @@ Moobile.Simulator.Device['iPad-Retina'] = new Class({
 /*
 ---
 
-name: Device.iPhoneRetina
+name: Device.iPhone5
 
 description:
 
@@ -1085,37 +1010,113 @@ requires:
 	- Device
 
 provides:
-	- Device.iPhoneRetina
+	- Device.iPhone5
 
 ...
 */
 
-Moobile.Simulator.Device['iPhone-Retina'] = new Class({
+Moobile.Simulator.Device['iPhone5'] = new Class({
 
-	Extends: Moobile.Simulator.Device['iPhone'],
+	Extends: Moobile.Simulator.Device['iPhone4'],
 
 	/**
 	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.2
+	 * @since  0.1
 	 */
 	setup: function() {
 		this.parent();
-		this.require('iPhone-Retina/styles.css');
+		this.require('iPhone5/styles.css');
  	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
+	getSize: function() {
+		return {
+			x: 382,
+			y: 801
+		};
+	}
+
+});
+
+
+/*
+---
+
+name: Device.GalaxyS3
+
+description:
+
+license: MIT-style license.
+
+author:
+	- Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+
+requires:
+	- Device
+
+provides:
+	- Device.GalaxyS3
+
+...
+*/
+
+Moobile.Simulator.Device['GalaxyS3'] = new Class({
+
+	Extends: Moobile.Simulator.Device,
 
 	/**
 	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
 	 * @since  0.2
 	 */
- 	teardown: function() {
+	glare: null,
 
- 		var applicationWindow = this.simulator.getApplicationWindow();
- 		if (applicationWindow) {
- 			applicationWindow.document.body.style.zoom = null;
- 		}
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	statusBar: null,
 
- 		this.parent();
- 	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.1
+	 */
+	setup: function() {
+
+		this.parent();
+
+		this.require('GalaxyS3/styles.css');
+
+		var wrapper = this.simulator.getDeviceElement();
+		var content = this.simulator.getScreenElement();
+
+		this.glare = new Element('div.simulator-glare');
+		this.glare.inject(wrapper, 'top');
+
+		this.statusBar = new Element('div.simulator-status-bar');
+		this.statusBar.inject(content, 'top');
+
+		this.defineOption('glare', 'Show Screen Glare', {
+			active: true,
+			enable:  function() { wrapper.removeClass('without-glare') },
+			disable: function() { wrapper.addClass('without-glare') }
+		});
+	},
+
+	/**
+	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @since  0.2
+	 */
+	teardown: function() {
+		this.glare.destroy();
+		this.glare = null;
+		this.statusBar.destroy();
+		this.statusBar = null;
+		this.parent();
+	},
 
 	/**
 	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
@@ -1123,27 +1124,12 @@ Moobile.Simulator.Device['iPhone-Retina'] = new Class({
 	 */
 	getSize: function() {
 		return {
-			x: 764,
-			y: 1488
+			x: 418,
+			y: 812
 		};
-	},
-
-	/**
-	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
-	 * @since  0.2
-	 */
-	applicationDidStart: function() {
-
-		this.parent();
-
- 		var applicationWindow = this.simulator.getApplicationWindow();
- 		if (applicationWindow) {
- 			applicationWindow.document.body.style.zoom = '200%';
- 		}
 	}
 
 });
-
 
 /*
 ---
