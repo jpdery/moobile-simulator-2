@@ -41,7 +41,7 @@ var Settings = {
 	 * @since  0.2
 	 */
 	getDevice: function() {
-		return LocalStorage.get('device') || 'iPhone';
+		return LocalStorage.get('device') || 'iPhone5';
 	},
 
 	/**

@@ -214,10 +214,7 @@ Moobile.Simulator = new Class({
 			this.device = null;
 		}
 
-		var device = Moobile.Simulator.Device[name];
-		if (device === undefined) {
-			throw new Error('Device ' + name + ' does not exists.');
-		}
+		var device = Moobile.Simulator.Device[name] || Moobile.Simulator.Device['iPhone5'];
 
 		this.device = new device(this);
 		this.deviceElement.setStyle('height', this.device.getSize().y);
