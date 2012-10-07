@@ -893,8 +893,8 @@ Moobile.Simulator.Device['iPad'] = new Class({
 	 */
 	getSize: function() {
 		return {
-			x: 978,
-			y: 1268
+			x: 966,
+			y: 1255
 		};
 	}
 
@@ -1473,8 +1473,8 @@ var Animation = new Class({
 			return this;
 
 		this._running = false;
-		this.detach();
 		this.fireEvent('stop');
+		this.detach();
 
 		return this;
 	},
