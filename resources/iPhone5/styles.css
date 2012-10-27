@@ -58,3 +58,18 @@
 .simulator.landscape.with-safari-bar .simulator-screen iframe { height: 240px; }
 .simulator.landscape.with-button-bar.with-safari-bar .simulator-screen iframe { height: 208px; }
 
+/* Safari Bar
+-----------------------------------------------------------------------------*/
+
+.simulator.landscape .simulator-safari-bar {
+	background: url(safari-bar-landscape.png);
+    background-size: 568px 60px;
+}
+
+/* Button Bar
+-----------------------------------------------------------------------------*/
+
+.simulator.landscape .simulator-button-bar {
+	background: url(button-bar-landscape.png);
+	background-size: 568px 32px;
+}
