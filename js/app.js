@@ -396,6 +396,7 @@ new Unit({
 	readySetup: function() {
 
 		document.body.addClass(Browser.name);
+		document.body.addClass(Browser.name + '-' + Browser.version);
 
 		this.content = document.getElement('.content');
 

@@ -133,6 +133,31 @@ body {
 	clear: both;
 }
 
+/* Error Message
+-----------------------------------------------------------------------------*/
+
+body:before {
+	background: #55acd5;
+	color: #fff;
+	content: 'The simualtor requires a Webkit-based browser, it might not work property with this browser.';
+	display: block;
+	bottom: 0px;
+	font-family: 'HelveticaNeue', sans-serif;
+	font-weight: normal;
+	font-size: 18px;
+	left: 0px;
+	position: absolute;
+	padding: 10px;
+	right: 0px;
+	text-align: center;
+	text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
+}
+
+body.safari:before,
+body.chrome:before {
+	display: none;
+}
+
 /* Toolbar
 -----------------------------------------------------------------------------*/
 

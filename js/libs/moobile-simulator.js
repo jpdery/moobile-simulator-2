@@ -133,13 +133,8 @@ Moobile.Simulator = new Class({
 	 * @since  0.1
 	 */
 	initialize: function(options) {
-
-		document.body.addClass(Browser.name);
-		document.body.addClass(Browser.name + '-' + Browser.version);
-
 		this.setOptions(options);
 		this.build();
-
 		return this;
 	},
 
