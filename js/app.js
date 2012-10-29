@@ -535,24 +535,19 @@ new Unit({
 
 		var source = iframe.get('src');
 		if (source) {
-
 			var frame = iframe.getSize();
 			var popup = window.open(source, '_blank', 'height=' + frame.y + ',width=' + frame.x + ',location=no,menubar=no,scrollbars=no,status=no,titlebar=no,toolbar=no');
 			var resize = function() {
-				var sizeX = popup.document.body.clientWidth;
-				var sizeY = popup.document.body.clientHeight;
-				if (sizeX == 0 && sizeY == 0) {
-					resize.delay(50);
-					return;
-				}
-				var resizeX = frame.x - sizeX;
-				var resizeY = frame.y - sizeY;
-				if (resizeX || resizeY) {
-					popup.resizeTo(frame.x + resizeX, frame.y + resizeY);
+				var diffX = popup.outerWidth - popup.document.body.offsetWidth;
+				var diffY = popup.outerHeight - popup.document.body.offsetHeight;
+				popup.resizeTo(frame.x + diffX, frame.y + diffY);
+				var sizeX = popup.document.body.offsetWidth;
+				var sizeY = popup.document.body.offsetHeight;
+				if (sizeX != frame.x || sizeY != frame.y) {
+					resize.delay(100);
 				}
 			};
-
-			resize.delay(50);
+			resize.delay(100);
 		}
 	},
 

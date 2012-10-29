@@ -3,8 +3,8 @@
 
 .simulator {
 	background: url(iphone.png) no-repeat;
-	background-size: 382px 801px;
-	height: 801px;
+	background-size: 382px 802px;
+	height: 802px;
 	padding-top: 118px;
 	padding-bottom: 115px;
 	padding-left: 32px;
@@ -14,8 +14,8 @@
 
 .simulator .simulator-glare {
 	background: url(iphone-glare.png) no-repeat;
-	background-size: 382px 801px;
-	height: 801px;
+	background-size: 382px 802px;
+	height: 802px;
 	width: 382px;
 }
 
