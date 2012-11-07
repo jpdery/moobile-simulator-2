@@ -114,6 +114,7 @@ body {
 	    -ms-font-smoothing: antialiased;
 	     -o-font-smoothing: antialiased;
 	        font-smoothing: antialiased;
+	        -webkit-transform: translate3d(0, 0, 0);
 	background: #e5e5e5;
 	background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 500, from(#fff), to(#e5e5e5));
 	background: -webkit-radial-gradient(#fff, #e5e5e5);
