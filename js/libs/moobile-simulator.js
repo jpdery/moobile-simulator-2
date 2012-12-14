@@ -275,7 +275,9 @@ Moobile.Simulator = new Class({
 		if (this.applicationWindow) {
 			this.applicationWindow.orientation = orientation === this.device.factoryOrientation ? 0 : 90;
 			this.applicationWindow.orientationName = orientation;
-			this.applicationWindow.fireEvent('orientationchange');
+			var orientationEvent = this.applicationWindow.document.createEvent('Event');
+			orientationEvent.initEvent('orientationchange', true, false);
+			this.applicationWindow.document.dispatchEvent( orientationEvent ); 
 		}
 
 		this.fireEvent('deviceorientationchange', orientation);
