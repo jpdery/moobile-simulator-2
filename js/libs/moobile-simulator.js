@@ -273,9 +273,11 @@ Moobile.Simulator = new Class({
 		this.deviceElement.addClass(orientation);
 
 		if (this.applicationWindow) {
-			this.applicationWindow.orientation = orientation === 'portrait' ? 0 : 90;
+			this.applicationWindow.orientation = orientation === this.device.factoryOrientation ? 0 : 90;
 			this.applicationWindow.orientationName = orientation;
-			this.applicationWindow.fireEvent('orientationchange');
+			var orientationEvent = this.applicationWindow.document.createEvent('Event');
+			orientationEvent.initEvent('orientationchange', true, false);
+			this.applicationWindow.document.dispatchEvent( orientationEvent ); 
 		}
 
 		this.fireEvent('deviceorientationchange', orientation);
@@ -462,7 +464,7 @@ Moobile.Simulator = new Class({
 	 */
 	_onApplicationLoad: function() {
 		this.applicationWindow = this.iframeElement.contentWindow;
-		this.applicationWindow.orientation = this.deviceOrientation === 'portrait' ? 0 : 90;
+		this.applicationWindow.orientation = this.deviceOrientation === this.device.factoryOrientation ? 0 : 90;
 		this.applicationWindow.orientationName = this.deviceOrientation;
 		this.device.applicationDidLoad();
 	}
@@ -525,7 +527,13 @@ Moobile.Simulator.Device = new Class({
 	 * @since  0.2
 	 */
 	resources: [],
-
+  
+  /**
+   * @author 
+   *
+   */
+  factoryOrientation: null,
+  
 	/**
 	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
 	 * @since  0.2
@@ -729,7 +737,13 @@ Moobile.Simulator.Device['iOS'] = new Class({
 	 * @since  0.2
 	 */
 	statusBarBattery: null,
-
+  
+    /**
+   * @author 
+   *
+   */
+  factoryOrientation: 'portrait',
+  
 	/**
 	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
 	 * @since  0.1
@@ -1071,7 +1085,12 @@ Moobile.Simulator.Device['GalaxyS3'] = new Class({
 	 */
 	statusBar: null,
 
-
+  /**
+   * @author 
+   *
+   */
+  factoryOrientation: 'landscape',
+  
 	/**
 	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
 	 * @since  0.1

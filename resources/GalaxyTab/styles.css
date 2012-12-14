@@ -1,0 +1,85 @@
+/* Device
+-----------------------------------------------------------------------------*/
+
+.simulator {
+	background: url(galaxyTab.png) no-repeat;
+	background-size: 1030px 1509px;
+	height: 1509px;
+	padding-top: 111px;
+	padding-bottom: 120px;
+	padding-left: 114px;
+	padding-right: 114px;
+	width: 1030px;
+}
+
+.simulator.landscape{
+  top: -200px;
+}
+
+.simulator .simulator-glare {
+	background: url(galaxy-glare.png) no-repeat top right;
+    background-size: 1030px 1509px;
+	height: 1509px;
+	width: 1030px;
+}
+
+.simulator .simulator-facade {
+	height: 1280px;
+	width: 800px;
+}
+
+.simulator.portrait .simulator-screen {
+	height: 1280px;
+	width: 800px;
+}
+
+.simulator.landscape .simulator-screen {
+	height: 800px;
+	margin-top: 240px;
+	margin-left: -240px;
+	width: 1280px;
+}
+
+.simulator.portrait .simulator-screen iframe {
+	height: 1234px;
+	width: 800px;
+}
+
+.simulator.landscape .simulator-screen iframe {
+	height: 754px;
+	width: 1280px;
+}
+
+/* Portrait With Safari Bar */
+
+.simulator.portrait.with-safari-bar .simulator-screen iframe {	height: 928px; }
+/*.simulator.portrait.with-button-bar.with-safari-bar .simulator-screen iframe { height: 356px; }*/
+
+/* Landscape With Safari Bar */
+
+.simulator.landscape.with-safari-bar .simulator-screen iframe { height: 672px; }
+/*.simulator.landscape.with-button-bar.with-safari-bar .simulator-screen iframe { height: 208px; }*/
+
+/*Status Bar
+-----------------------------------------------------------------------------*/
+
+.simulator .simulator-safari-bar {
+	display: none;
+	width: 100%;
+}
+
+.simulator.portrait .simulator-safari-bar {
+	background: url(status-bar-portrait.png);
+    background-size: 800px 46px;
+    height: 76px;
+}
+
+.simulator.landscape .simulator-safari-bar {
+	background: url(status-bar-landscape.png);
+    background-size: 1280px 46px;
+    height: 76px;
+}
+
+.simulator.with-safari-bar .simulator-safari-bar {
+	display: block;
+}
