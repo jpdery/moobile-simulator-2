@@ -625,7 +625,7 @@ Moobile.Simulator.Device = new Class({
 	},
 
 	/**
-	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @author Tollot Michele (michele.tollot@gmail.com)
 	 * @since  0.2
 	 */
 	defineOption: function(id, title, options) {
@@ -637,6 +637,8 @@ Moobile.Simulator.Device = new Class({
 			disable: options.disable || function(){}
 		};
 
+    Object.append(this.options[id],options);
+
 		if (this.options[id].active) {
 			this.options[id].enable.call(this);
 		}
@@ -645,7 +647,7 @@ Moobile.Simulator.Device = new Class({
 	},
 
 	/**
-	 * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+	 * @author Tollot Michele (michele.tollot@gmail.com)
 	 * @since  0.2
 	 */
 	setOption: function(id, active) {
@@ -659,6 +661,8 @@ Moobile.Simulator.Device = new Class({
 			option.active = active;
 			if (active) option.enable.call(this)
 			else        option.disable.call(this);
+      for(var opt in options)
+        if (option[opt]) option[opt].call(this,options[opt]);
 		}
 
 		return this;

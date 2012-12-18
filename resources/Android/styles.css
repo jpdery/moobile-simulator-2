@@ -1,0 +1,48 @@
+/* Glare
+-----------------------------------------------------------------------------*/
+
+.simulator.without-glare .simulator-glare {
+	display: none;
+}
+
+/* Status Bar
+-----------------------------------------------------------------------------*/
+
+.simulator .simulator-status-bar {
+	background: url(status-bar.png) repeat-x;
+    background-size: 1280px 48px;
+	display: block;
+	height: 48px;
+	line-height: 48px;
+	bottom: 0px;
+	width: 100%;
+	z-index: 10;
+}
+
+.simulator .simulator-status-bar-system,
+.simulator .simulator-status-bar-browser,
+.simulator .simulator-status-bar-time {
+	-webkit-font-smoothing: antialiased;
+	height: 48px;
+	left: 0px;
+	position: absolute;
+	right: 0px;
+}
+
+.simulator .simulator-status-bar-browser {
+	background: url(status-bar-browser.png) no-repeat center left;
+    background-size: 233px 48px;
+	left: 3px;
+}
+
+.simulator .simulator-status-bar-system {
+	background: url(status-bar-system.png) no-repeat center right;
+    background-size: 89px 48px;
+	right: 3px;
+}
+
+.simulator .simulator-status-bar-time {
+	background: url(status-bar-time.png) no-repeat center right;
+    background-size: 67px 48px;
+	right: 92px;
+}
