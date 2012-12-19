@@ -2,53 +2,53 @@
 -----------------------------------------------------------------------------*/
 
 .simulator {
-	background: url(ipad.png) no-repeat;
-	background-size: 966px 1256px;
-	height: 1256px;
-	padding-top: 115px;
-	padding-bottom: 115px;
-	padding-left: 100px;
-	padding-right: 98px;
-	width: 966px;
+  background: url(ipad.png) no-repeat;
+  background-size: 966px 1256px;
+  height: 1256px;
+  padding-top: 115px;
+  padding-bottom: 115px;
+  padding-left: 100px;
+  padding-right: 98px;
+  width: 966px;
 }
 
 .simulator .simulator-glare {
-	background: url(ipad-glare.png) no-repeat top right;
+  background: url(ipad-glare.png) no-repeat top right;
     background-size: 966px 1256px;
-	height: 1256px;
-	width: 966px;
+  height: 1256px;
+  width: 966px;
 }
 
 .simulator .simulator-facade {
-	height: 1024px;
-	width: 768px;
+  height: 1024px;
+  width: 768px;
 }
 
 .simulator.portrait .simulator-screen {
-	height: 1024px;
-	width: 768px;
+  height: 1024px;
+  width: 768px;
 }
 
 .simulator.landscape .simulator-screen {
-	height: 768px;
-	margin-top: 128px;
-	margin-left: -128px;
-	width: 1024px;
+  height: 768px;
+  margin-top: 128px;
+  margin-left: -128px;
+  width: 1024px;
 }
 
 .simulator.portrait .simulator-screen iframe {
-	height: 1004px;
-	width: 768px;
+  height: 1004px;
+  width: 768px;
 }
 
 .simulator.landscape .simulator-screen iframe {
-	height: 748px;
-	width: 1024px;
+  height: 748px;
+  width: 1024px;
 }
 
 /* Portrait With Safari Bar */
 
-.simulator.portrait.with-safari-bar .simulator-screen iframe {	height: 928px; }
+.simulator.portrait.with-safari-bar .simulator-screen iframe {  height: 928px; }
 
 /* Landscape With Safari Bar */
 
@@ -58,22 +58,58 @@
 -----------------------------------------------------------------------------*/
 
 .simulator .simulator-safari-bar {
-	display: none;
-	width: 100%;
+  display: none;
+  width: 100%;
 }
 
 .simulator.portrait .simulator-safari-bar {
-	background: url(safari-bar-portrait.png);
+  background: url(safari-bar-portrait.png);
     background-size: 768px 76px;
     height: 76px;
 }
 
 .simulator.landscape .simulator-safari-bar {
-	background: url(safari-bar-landscape.png);
+  background: url(safari-bar-landscape.png);
     background-size: 1024px 76px;
     height: 76px;
 }
 
 .simulator.with-safari-bar .simulator-safari-bar {
-	display: block;
+  display: block;
+}
+
+.simulator .simulator-browser-bar-address,
+.simulator .simulator-browser-tab-title{
+  position: absolute;
+  border: 0;
+  background: transparent;
+  width: 320px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.simulator .simulator-browser-bar-address{
+  font: normal 15px Helvetica; 
+  color: #666666;
+  top: 30px;
+  left: 200px;
+}
+
+.simulator .simulator-browser-tab-title{
+  font: bold 14px Helvetica; 
+  color: #41454C;
+  text-shadow: 1px 1px #E8EAED;
+  text-align: center;
+  top: 66px;
+  left: 400px;
+}
+
+.simulator.landscape .simulator-browser-bar-address
+.simulator.landscape .simulator-browser-tab-title{
+  width: 460px;
+}
+
+.simulator.landscape .simulator-browser-tab-title{
+  left: 535px;
 }

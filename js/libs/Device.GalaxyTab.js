@@ -178,9 +178,9 @@ Moobile.Simulator.Device['GalaxyTab'] = new Class({
     
     this.defineOption('browser-address', 'Set Navigation Address', {
       active: true,
-      enable:  function() { wrapper.addClass('with-browser-bar'); },
-      disable: function() { wrapper.removeClass('with-browser-bar'); },
-      value: function( address ) { this.browserAddress.set('value',address); },
+      enable:  function() { this.browserAddress.show(); },
+      disable: function() { this.browserAddress.hide(); },
+      value: function( address ) { this.browserAddress.set('value',address); }
     });
 
   },
