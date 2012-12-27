@@ -2,14 +2,14 @@
 -----------------------------------------------------------------------------*/
 
 .simulator {
-	background: url(galaxyTab.png) no-repeat;
-	background-size: 1030px 1509px;
-	height: 1509px;
-	padding-top: 111px;
-	padding-bottom: 120px;
-	padding-left: 114px;
-	padding-right: 114px;
-	width: 1030px;
+  background: url(galaxyTab.png) no-repeat;
+  background-size: 1030px 1509px;
+  height: 1509px;
+  padding-top: 111px;
+  padding-bottom: 120px;
+  padding-left: 114px;
+  padding-right: 114px;
+  width: 1030px;
 }
 
 .simulator.landscape{
@@ -17,69 +17,85 @@
 }
 
 .simulator .simulator-glare {
-	background: url(galaxy-glare.png) no-repeat top right;
+  background: url(galaxy-glare.png) no-repeat top right;
     background-size: 1030px 1509px;
-	height: 1509px;
-	width: 1030px;
+  height: 1509px;
+  width: 1030px;
 }
 
 .simulator .simulator-facade {
-	height: 1280px;
-	width: 800px;
+  height: 1280px;
+  width: 800px;
 }
 
 .simulator.portrait .simulator-screen {
-	height: 1280px;
-	width: 800px;
+  height: 1280px;
+  width: 800px;
 }
 
 .simulator.landscape .simulator-screen {
-	height: 800px;
-	margin-top: 240px;
-	margin-left: -240px;
-	width: 1280px;
+  height: 800px;
+  margin-top: 240px;
+  margin-left: -240px;
+  width: 1280px;
 }
 
 .simulator.portrait .simulator-screen iframe {
-	height: 1234px;
-	width: 800px;
+  height: 1234px;
+  width: 800px;
 }
 
 .simulator.landscape .simulator-screen iframe {
-	height: 754px;
-	width: 1280px;
+  height: 754px;
+  width: 1280px;
 }
 
-/* Portrait With Safari Bar */
+/* Portrait With Browser Bar */
 
-.simulator.portrait.with-safari-bar .simulator-screen iframe {	height: 928px; }
-/*.simulator.portrait.with-button-bar.with-safari-bar .simulator-screen iframe { height: 356px; }*/
+.simulator.portrait.with-browser-bar .simulator-screen iframe {  height: 1130px; }
 
-/* Landscape With Safari Bar */
+/* Landscape With Browser Bar */
 
-.simulator.landscape.with-safari-bar .simulator-screen iframe { height: 672px; }
-/*.simulator.landscape.with-button-bar.with-safari-bar .simulator-screen iframe { height: 208px; }*/
+.simulator.landscape.with-browser-bar .simulator-screen iframe { height: 650px; }
 
-/*Status Bar
+/*Browser Bar
 -----------------------------------------------------------------------------*/
 
-.simulator .simulator-safari-bar {
-	display: none;
-	width: 100%;
+.simulator .simulator-browser-bar {
+  display: none;
+  width: 100%;
 }
 
-.simulator.portrait .simulator-safari-bar {
-	background: url(status-bar-portrait.png);
-    background-size: 800px 46px;
-    height: 76px;
+.simulator.portrait .simulator-browser-bar {
+  background: url(browser-bar-portrait.png);
+    background-size: 800px 104px;
+    height: 104px;
 }
 
-.simulator.landscape .simulator-safari-bar {
-	background: url(status-bar-landscape.png);
-    background-size: 1280px 46px;
-    height: 76px;
+.simulator.landscape .simulator-browser-bar {
+  background: url(browser-bar-landscape.png);
+    background-size: 1280px 104px;
+    height: 104px;
 }
 
-.simulator.with-safari-bar .simulator-safari-bar {
-	display: block;
+.simulator.with-browser-bar .simulator-browser-bar {
+  display: block;
+}
+
+.simulator .simulator-browser-address{
+  position: absolute;
+  top: 70px;
+  left: 220px;
+  border: 0;
+  font: normal 16px Helvetica; 
+  color: #F4F4F4;
+  background: transparent;
+  width: 410px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.simulator.landscape .simulator-browser-address{
+  width: 900px;
 }
