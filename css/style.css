@@ -134,6 +134,14 @@ body {
 	clear: both;
 }
 
+* {
+	-webkit-backface-visibility: hidden;
+	   -moz-backface-visibility: hidden;
+	    -ms-backface-visibility: hidden;
+	     -o-backface-visibility: hidden;
+	     -o-backface-visibility: hidden;
+}
+
 /* Error Message
 -----------------------------------------------------------------------------*/
 

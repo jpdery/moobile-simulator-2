@@ -277,7 +277,7 @@ Moobile.Simulator = new Class({
       this.applicationWindow.orientationName = orientation;
       var orientationEvent = this.applicationWindow.document.createEvent('Event');
       orientationEvent.initEvent('orientationchange', true, false);
-      this.applicationWindow.document.dispatchEvent( orientationEvent ); 
+      this.applicationWindow.document.dispatchEvent( orientationEvent );
     }
 
     this.fireEvent('deviceorientationchange', orientation);
@@ -527,13 +527,13 @@ Moobile.Simulator.Device = new Class({
    * @since  0.2
    */
   resources: [],
-  
+
   /**
-   * @author 
+   * @author
    *
    */
   factoryOrientation: null,
-  
+
   /**
    * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
    * @since  0.2
@@ -740,13 +740,13 @@ Moobile.Simulator.Device['iOS'] = new Class({
    * @since  0.2
    */
   statusBarBattery: null,
-  
+
     /**
-   * @author 
+   * @author
    *
    */
   factoryOrientation: 'portrait',
-  
+
   /**
    * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
    * @since  0.1
@@ -878,10 +878,10 @@ Moobile.Simulator.Device['iPad'] = new Class({
 
     this.safariBar = new Element('div.simulator-safari-bar');
     this.safariBar.inject(payload, 'before');
-    
+
     this.browserBarAddress = new Element('input.simulator-browser-bar-address',{'readonly':'readonly'});
     this.browserBarAddress.inject(this.safariBar, 'top');
-    
+
     this.browserTabTitle = new Element('input.simulator-browser-tab-title',{'readonly':'readonly'});
     this.browserTabTitle.inject(this.safariBar, 'top');
 
@@ -890,21 +890,21 @@ Moobile.Simulator.Device['iPad'] = new Class({
       enable:  function() { wrapper.addClass('with-safari-bar'); },
       disable: function() { wrapper.removeClass('with-safari-bar'); }
     });
-    
+
     this.defineOption('browser-address', 'Set Navigation Address', {
       active: true,
-      enable:  function() { this.browserBarAddress.show(); },
+      enable:  function() { console.log(this.browserBarAddress.show); this.browserBarAddress.show(); },
       disable: function() { this.browserBarAddress.hide(); },
       value: function( address ) { this.browserBarAddress.set('value',address); }
     });
-    
+
     this.defineOption('browser-title', 'Set Navigation Title', {
       active: true,
       enable:  function() { this.browserTabTitle.show(); },
       disable: function() { this.browserTabTitle.hide(); },
       value: function( title ) { this.browserTabTitle.set('value',title); }
     });
-    
+
    },
 
   /**
@@ -1110,11 +1110,11 @@ Moobile.Simulator.Device['GalaxyS3'] = new Class({
   statusBar: null,
 
   /**
-   * @author 
+   * @author
    *
    */
   factoryOrientation: 'landscape',
-  
+
   /**
    * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
    * @since  0.1
